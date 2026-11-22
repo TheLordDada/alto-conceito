@@ -1,6 +1,6 @@
 /**
  * ALTO CONCEITO - SCRIPT DO PAINEL DO LOJISTA (ADMIN)
- * Acesso exclusivo: joaoguilherme11jg10@gmail.com
+ * Acesso Restrito
  */
 
 // Chaves do LocalStorage
@@ -8,9 +8,16 @@ const STORAGE_PRODUCTS = 'alto_conceito_produtos';
 const STORAGE_CONFIG = 'alto_conceito_config';
 const STORAGE_SESSION = 'alto_conceito_session_admin';
 
-// Credenciais Autorizadas
-const AUTH_EMAIL = 'joaoguilherme11jg10@gmail.com';
-const AUTH_PASS = 'J11ao20gui10';
+// Hashes Criptográficos para Segurança de Autenticação (SHA-256)
+const AUTH_EMAIL_HASH = '68724a4ee692881131c4e1c8582c9dd78d04458c24defb57620440adf07e733d';
+const AUTH_PASS_HASH = '70ebe7d48f49a2b7a306403b78519c15ec9062dcd474956c3b0d82c0256b2614';
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 // Catálogo Padrão de Recuperação
 const DEFAULT_PRODUCTS = [
@@ -163,20 +170,23 @@ function showDashboard() {
     populateConfigForm();
 }
 
-function handleLogin(e) {
+async function handleLogin(e) {
     e.preventDefault();
 
     const email = document.getElementById('loginEmail').value.trim().toLowerCase();
     const pass = document.getElementById('loginPassword').value.trim();
     const remember = document.getElementById('rememberLogin').checked;
 
-    if (email === AUTH_EMAIL.toLowerCase() && pass === AUTH_PASS) {
+    const emailHash = await sha256(email);
+    const passHash = await sha256(pass);
+
+    if (emailHash === AUTH_EMAIL_HASH && passHash === AUTH_PASS_HASH) {
         if (remember) {
             localStorage.setItem(STORAGE_SESSION, 'true');
         } else {
             sessionStorage.setItem(STORAGE_SESSION, 'true');
         }
-        showToast('✓ Bem-vindo ao painel, João Guilherme!');
+        showToast('✓ Bem-vindo ao painel do lojista!');
         showDashboard();
     } else {
         alert('E-mail ou senha incorretos! Verifique os dados digitados.');
