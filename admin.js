@@ -105,7 +105,7 @@ const DEFAULT_PRODUCTS = [
         price: 99.90,
         promoPrice: 79.90,
         sizes: ['Único (60cm)'],
-        image: 'https://images.unsplash.com/photo-1611591475819-79b8b7384662?auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=800&q=80',
         badge: null,
         description: 'Acessório chave para elevar qualquer visual básico. Brilho sofisticado e fecho resistente.',
         inStock: true
