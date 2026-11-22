@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Lojista | Alto Conceito</title>
+    
+    <meta name="theme-color" content="#09090b">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#09090b',
+                            800: '#121215',
+                            700: '#18181c',
+                            600: '#27272a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- CSS Customizado -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#09090b] text-white min-h-screen flex flex-col antialiased selection:bg-white selection:text-black">
+
+    <!-- ==========================================
+         TELA DE LOGIN DO ADMINISTRADOR
+    =========================================== -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-[#121215] border border-zinc-800 rounded-3xl max-w-md w-full p-8 shadow-2xl space-y-6">
+            
+            <!-- Logo Alto Conceito -->
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-white text-black font-black text-2xl flex items-center justify-center shadow-lg">
+                    A
+                </div>
+                <h1 class="font-heading font-black text-xl tracking-widest text-white uppercase mt-3">
+                    ALTO CONCEITO
+                </h1>
+                <p class="text-[11px] uppercase tracking-[0.2em] text-zinc-400 font-semibold">
+                    Portal do Lojista • Acesso Restrito
+                </p>
+            </div>
+
+            <!-- Formulário de Login -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 pt-2">
+                <div>
+                    <label class="text-xs font-bold text-zinc-300 block mb-1.5 uppercase tracking-wider">E-mail de Acesso:</label>
+                    <div class="relative">
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            required
+                            placeholder="joaoguilherme11jg10@gmail.com" 
+                            class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 pl-10 text-xs text-white focus:outline-none focus:border-white transition-colors">
+                        <svg class="w-4 h-4 text-zinc-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-zinc-300 block mb-1.5 uppercase tracking-wider">Senha:</label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            required
+                            placeholder="••••••••••••" 
+                            class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 pl-10 text-xs text-white focus:outline-none focus:border-white transition-colors">
+                        <svg class="w-4 h-4 text-zinc-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-zinc-400 pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="rememberLogin" checked class="accent-white rounded">
+                        <span>Lembrar meu acesso</span>
+                    </label>
+                    <a href="index.html" class="hover:text-white transition-colors">← Ver Loja</a>
+                </div>
+
+                <button type="submit" class="btn-primary w-full py-3.5 text-xs font-black tracking-wider uppercase shadow-xl mt-4">
+                    Entrar no Painel
+                </button>
+            </form>
+
+            <div class="text-center pt-2 border-t border-zinc-800/80 text-[11px] text-zinc-500">
+                Acesso seguro e exclusivo para gerenciamento da loja Alto Conceito.
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==========================================
+         DASHBOARD PRINCIPAL DO ADMINISTRADOR
+    =========================================== -->
+    <div id="adminDashboard" class="hidden min-h-screen flex flex-col">
+        
+        <!-- Header do Painel -->
+        <header class="glass-nav sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+                
+                <!-- Logo & Identificação -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-black text-lg">
+                        A
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-heading font-black text-sm sm:text-base tracking-widest text-white uppercase">
+                                ALTO CONCEITO
+                            </span>
+                            <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-[9px] uppercase tracking-wider">
+                                Lojista Online
+                            </span>
+                        </div>
+                        <span id="userEmailBadge" class="text-[10px] text-zinc-400 block -mt-0.5">
+                            joaoguilherme11jg10@gmail.com
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ações do Header -->
+                <div class="flex items-center gap-3">
+                    <a href="index.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-bold text-white flex items-center gap-1.5 transition-all shadow-sm">
+                        <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <span>Visualizar Loja</span>
+                    </a>
+
+                    <button type="button" onclick="handleLogout()" class="px-3 py-2 rounded-xl bg-zinc-900 hover:bg-red-950/40 border border-zinc-800 hover:border-red-500/40 text-xs font-bold text-zinc-400 hover:text-red-400 transition-all flex items-center gap-1.5" title="Sair da Conta">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <span class="hidden sm:inline">Sair</span>
+                    </button>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- Métricas Rápidas -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 w-full">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-2xl">
+                    <span class="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Total de Peças</span>
+                    <div id="metricTotalProducts" class="text-2xl font-black text-white mt-1">0</div>
+                    <span class="text-[10px] text-zinc-400 mt-0.5 block">No catálogo online</span>
+                </div>
+                <div class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-2xl">
+                    <span class="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Em Estoque</span>
+                    <div id="metricInStock" class="text-2xl font-black text-emerald-400 mt-1">0</div>
+                    <span class="text-[10px] text-zinc-400 mt-0.5 block">Disponíveis p/ compra</span>
+                </div>
+                <div class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-2xl">
+                    <span class="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">Categorias Ativas</span>
+                    <div id="metricCategories" class="text-2xl font-black text-white mt-1">6</div>
+                    <span class="text-[10px] text-zinc-400 mt-0.5 block">Seções da loja</span>
+                </div>
+                <div class="bg-zinc-900/60 border border-zinc-800 p-4 rounded-2xl">
+                    <span class="text-zinc-500 text-[10px] uppercase font-bold tracking-wider">WhatsApp Conectado</span>
+                    <div id="metricWhatsApp" class="text-sm font-black text-white mt-2 truncate">(18) 99638-7204</div>
+                    <span class="text-[10px] text-emerald-400 mt-0.5 block">Recebendo pedidos</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegação de Abas -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+            
+            <div class="flex items-center gap-2 border-b border-zinc-800 pb-3 mb-6 overflow-x-auto">
+                <button id="tabBtn_produtos" onclick="switchTab('produtos')" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-black">
+                    📦 Catálogo de Roupas
+                </button>
+                <button id="tabBtn_personalizar" onclick="switchTab('personalizar')" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-zinc-400 hover:text-white">
+                    🎨 Personalizar Loja & Banners
+                </button>
+                <button id="tabBtn_backup" onclick="switchTab('backup')" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all text-zinc-400 hover:text-white">
+                    💾 Backup & Sincronização
+                </button>
+            </div>
+
+            <!-- ==========================================
+                 ABA 1: PRODUTOS & ESTOQUE
+            =========================================== -->
+            <div id="tab_produtos" class="admin-tab-content space-y-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-black text-white">Gerenciamento de Roupas</h2>
+                        <p class="text-xs text-zinc-400">Adicione novas peças, ajuste preços ou marque esgotados</p>
+                    </div>
+
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <input 
+                            type="text" 
+                            id="adminProductSearch" 
+                            oninput="filterAdminProducts(this.value)" 
+                            placeholder="Filtrar peças..." 
+                            class="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white w-full sm:w-56">
+
+                        <button type="button" onclick="openProductModal()" class="btn-primary px-4 py-2 text-xs font-bold flex-shrink-0">
+                            + Nova Roupa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabela de Produtos -->
+                <div class="overflow-x-auto border border-zinc-800 rounded-2xl bg-[#121215]">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-zinc-900/80 border-b border-zinc-800 text-[10px] uppercase font-bold text-zinc-400">
+                                <th class="py-3.5 px-4">Foto</th>
+                                <th class="py-3.5 px-4">Nome da Peça</th>
+                                <th class="py-3.5 px-4">Categoria</th>
+                                <th class="py-3.5 px-4">Preço Normal</th>
+                                <th class="py-3.5 px-4">Preço Promo</th>
+                                <th class="py-3.5 px-4">Estoque</th>
+                                <th class="py-3.5 px-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsTbody" class="divide-y divide-zinc-800/60">
+                            <!-- Renderizado via admin.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 ABA 2: PERSONALIZAR LOJA
+            =========================================== -->
+            <div id="tab_personalizar" class="admin-tab-content hidden max-w-3xl space-y-6">
+                <div class="border-b border-zinc-800 pb-3">
+                    <h2 class="text-lg font-black text-white">Personalização da Loja</h2>
+                    <p class="text-xs text-zinc-400">Edite as informações públicas da marca e os banners da tela inicial</p>
+                </div>
+
+                <form id="formStoreConfig" onsubmit="saveConfigForm(event)" class="space-y-5 bg-[#121215] border border-zinc-800 p-6 rounded-2xl">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">Nome da Marca:</label>
+                            <input type="text" id="cfgStoreName" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">Slogan Oficial:</label>
+                            <input type="text" id="cfgStoreSlogan" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-zinc-300 block mb-1">Texto da Barra Superior (Avisos de Entrega / Destaques):</label>
+                        <input type="text" id="cfgAnnouncement" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">WhatsApp de Vendas (Recebe os Pedidos):</label>
+                            <input type="text" id="cfgWhatsapp" placeholder="5518996387204" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                            <span class="text-[10px] text-zinc-500 mt-1 block">Insira com código do país (55) e DDD. Ex: 5518996387204</span>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">Usuário do Instagram Oficial:</label>
+                            <input type="text" id="cfgInstagram" placeholder="alto_conceit0" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-zinc-800 pt-5 space-y-4">
+                        <h3 class="font-heading font-black text-sm text-white uppercase tracking-wider">Banner Principal da Página Inicial (Hero)</h3>
+                        
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">Badge Superior (Ex: NOVA COLEÇÃO 2026):</label>
+                            <input type="text" id="cfgHeroBadge" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">Título de Grande Destaque:</label>
+                            <input type="text" id="cfgHeroTitle" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">Subtítulo / Descrição da Coleção:</label>
+                            <textarea id="cfgHeroSubtitle" rows="2" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-zinc-300 block mb-1">URL da Imagem de Fundo:</label>
+                            <input type="text" id="cfgHeroImage" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full py-3.5 text-xs font-black uppercase tracking-wider shadow-lg">
+                        Salvar Todas as Configurações da Loja
+                    </button>
+                </form>
+            </div>
+
+            <!-- ==========================================
+                 ABA 3: BACKUP & DADOS
+            =========================================== -->
+            <div id="tab_backup" class="admin-tab-content hidden max-w-2xl space-y-5">
+                <div class="border-b border-zinc-800 pb-3">
+                    <h2 class="text-lg font-black text-white">Backup e Sincronização</h2>
+                    <p class="text-xs text-zinc-400">Salve cópias do seu catálogo ou sincronize com o repositório</p>
+                </div>
+
+                <div class="p-5 bg-[#121215] border border-zinc-800 rounded-2xl space-y-3">
+                    <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                        <span>📥</span> Exportar Catálogo de Roupas
+                    </h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Faça o download de um arquivo seguro <code>.json</code> contendo todas as peças cadastradas, preços, fotos e configurações para guardar de backup no seu computador ou celular.
+                    </p>
+                    <button type="button" onclick="exportCatalogJson()" class="btn-primary px-5 py-2.5 text-xs font-bold">
+                        Baixar Arquivo de Backup (JSON)
+                    </button>
+                </div>
+
+                <div class="p-5 bg-[#121215] border border-zinc-800 rounded-2xl space-y-3">
+                    <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                        <span>📤</span> Importar Catálogo de Roupas
+                    </h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Carregue um arquivo de backup que você salvou anteriormente.
+                    </p>
+                    <input type="file" id="importJsonInput" accept=".json" onchange="importCatalogJson(event)" class="text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-zinc-800 file:text-white hover:file:bg-zinc-700 cursor-pointer">
+                </div>
+
+                <div class="p-5 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                        <span>🚀</span> Publicar e Sincronizar no GitHub Pages
+                    </h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        Na pasta da sua loja na Área de Trabalho (<code>C:\Users\Usuário\Desktop\Alto_Conceito</code>), basta dar dois cliques no arquivo:
+                    </p>
+                    <div class="p-3 bg-zinc-900 rounded-xl font-mono text-xs text-emerald-400 border border-zinc-800">
+                        PUBLICAR_NO_GITHUB.bat
+                    </div>
+                    <p class="text-[11px] text-zinc-500">Ele envia as alterações diretamente para o site oficial.</p>
+                </div>
+
+                <div class="pt-2">
+                    <button type="button" onclick="resetDefaultCatalog()" class="text-xs text-red-400 hover:text-red-300 underline font-semibold">
+                        Restaurar Catálogo Padrão Original
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==========================================
+         MODAL: ADICIONAR / EDITAR PRODUTO
+    =========================================== -->
+    <div id="productModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-3">
+        <div class="bg-[#121215] border border-zinc-800 rounded-3xl max-w-lg w-full p-6 space-y-4 max-h-[92vh] overflow-y-auto shadow-2xl">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+                <h3 id="modalTitle" class="font-heading font-black text-base text-white">Adicionar Nova Peça</h3>
+                <button type="button" onclick="closeProductModal()" class="text-zinc-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form id="productForm" onsubmit="saveProduct(event)" class="space-y-4">
+                <input type="hidden" id="prodEditId">
+
+                <div>
+                    <label class="text-xs font-bold text-zinc-300 block mb-1">Nome da Roupa:</label>
+                    <input type="text" id="prodName" required placeholder="Ex: Camiseta Oversized Minimal Black" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-zinc-300 block mb-1">Categoria:</label>
+                        <select id="prodCategory" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                            <option value="camisetas">Camisetas</option>
+                            <option value="camisas">Camisas & Trajes</option>
+                            <option value="calcas">Calças</option>
+                            <option value="bermudas">Bermudas</option>
+                            <option value="jaquetas">Jaquetas & Puffer</option>
+                            <option value="acessorios">Acessórios</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-zinc-300 block mb-1">Selo / Destaque:</label>
+                        <select id="prodBadge" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                            <option value="">Nenhum</option>
+                            <option value="Lançamento">Lançamento</option>
+                            <option value="Destaque">Destaque</option>
+                            <option value="Mais Vendido">Mais Vendido</option>
+                            <option value="Promoção">Promoção</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-zinc-300 block mb-1">Preço Normal (R$):</label>
+                        <input type="number" id="prodPrice" step="0.01" min="0" required placeholder="149.90" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-zinc-300 block mb-1">Preço Promocional (R$):</label>
+                        <input type="number" id="prodPromoPrice" step="0.01" min="0" placeholder="119.90" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white">
+                    </div>
+                </div>
+
+                <!-- Tamanhos -->
+                <div>
+                    <label class="text-xs font-bold text-zinc-300 block mb-1.5">Tamanhos Disponíveis:</label>
+                    <div class="flex items-center gap-3 flex-wrap text-xs text-zinc-300 bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="P" class="accent-white"> P</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="M" checked class="accent-white"> M</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="G" checked class="accent-white"> G</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="GG" class="accent-white"> GG</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="38" class="accent-white"> 38</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="40" class="accent-white"> 40</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="42" class="accent-white"> 42</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="44" class="accent-white"> 44</label>
+                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" name="prodSizes" value="Único" class="accent-white"> Único</label>
+                    </div>
+                </div>
+
+                <!-- Foto da Peça -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-zinc-300 block">Foto da Roupa:</label>
+                    <div class="flex items-center gap-2">
+                        <input type="file" id="prodImageFile" accept="image/*" class="text-xs text-zinc-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-zinc-800 file:text-white hover:file:bg-zinc-700 cursor-pointer">
+                    </div>
+                    <span class="text-[10px] text-zinc-500 block">Ou cole o link direto da imagem:</span>
+                    <input type="text" id="prodImageUrl" placeholder="https://..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-white">
+
+                    <!-- Preview -->
+                    <div id="imagePreviewContainer" class="hidden mt-2 flex items-center gap-3 p-2 bg-zinc-900 rounded-xl border border-zinc-800">
+                        <img id="imagePreview" src="" class="w-14 h-14 object-cover rounded-lg bg-zinc-800">
+                        <span class="text-xs text-emerald-400 font-bold">✓ Imagem carregada</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-zinc-300 block mb-1">Descrição / Detalhes do Caimento:</label>
+                    <textarea id="prodDescription" rows="2" placeholder="Fale sobre o tecido, gola, caimento..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white"></textarea>
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeProductModal()" class="flex-1 py-3 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-xs hover:bg-zinc-700">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 py-3 rounded-xl bg-white text-black font-black text-xs hover:bg-zinc-200">
+                        Salvar Roupa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast de Notificações -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-white text-black px-4 py-2.5 rounded-xl font-bold text-xs shadow-2xl opacity-0 translate-y-4 pointer-events-none border border-white/20"></div>
+
+    <!-- Script Administrativo -->
+    <script src="admin.js"></script>
+</body>
+</html>
