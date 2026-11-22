@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+:root {
+    --bg-main: #09090b;
+    --bg-card: #121215;
+    --bg-elevated: #18181c;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.25);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --accent: #ffffff;
+    --accent-gold: #d4af37;
+    --accent-green: #25d366;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-heading {
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* Scrollbar Personalizada */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+}
+
+/* Ticker Animado da Barra Superior */
+@keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.ticker-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ticker-content {
+    display: inline-flex;
+    animation: ticker 25s linear infinite;
+}
+
+.ticker-wrap:hover .ticker-content {
+    animation-play-state: paused;
+}
+
+/* Efeito Vidro Fosco (Glassmorphism) */
+.glass {
+    background: rgba(18, 18, 22, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+}
+
+.glass-nav {
+    background: rgba(9, 9, 11, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Card de Produto */
+.product-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.6);
+}
+
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+    background: #18181b;
+    aspect-ratio: 3 / 4;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.06);
+}
+
+/* Badge de Destaque */
+.badge-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 6px;
+    backdrop-filter: blur(6px);
+}
+
+/* Seletor de Tamanhos */
+.size-btn {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.03);
+    color: #d4d4d8;
+}
+
+.size-btn:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+.size-btn.selected {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    font-weight: 800;
+}
+
+/* Gaveta do Carrinho / Sacola */
+#cartDrawer {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#cartDrawer.open {
+    transform: translateX(0);
+}
+
+#cartOverlay {
+    transition: opacity 0.3s ease;
+}
+
+/* Modais */
+.modal-overlay {
+    transition: opacity 0.25s ease;
+}
+
+.modal-content {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+/* Botões Estilizados */
+.btn-primary {
+    background: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background: #f4f4f5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+.btn-zap {
+    background: #25d366;
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-zap:hover {
+    background: #22c55e;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+}
+
+/* Animação suave para toasts */
+#toast {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
