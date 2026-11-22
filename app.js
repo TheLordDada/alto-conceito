@@ -54,7 +54,7 @@ const DEFAULT_PRODUCTS = [
         price: 159.90,
         promoPrice: 139.90,
         sizes: ['38', '40', '42', '44'],
-        image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80',
         badge: 'Promoção',
         description: 'Bolsos utilitários laterais, cordão ajustável e acabamento reforçado. Ideal para compor visual urbano imponente.',
         inStock: true
@@ -78,7 +78,7 @@ const DEFAULT_PRODUCTS = [
         price: 149.90,
         promoPrice: null,
         sizes: ['P', 'M', 'G', 'GG'],
-        image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=800&q=80',
         badge: null,
         description: 'Corte quadrado boxy, caimento solto e estampa minimalista centralizada nas costas. Estilo autêntico.',
         inStock: true
@@ -102,7 +102,7 @@ const DEFAULT_PRODUCTS = [
         price: 99.90,
         promoPrice: 79.90,
         sizes: ['Único (60cm)'],
-        image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1611591475819-79b8b7384662?auto=format&fit=crop&w=800&q=80',
         badge: null,
         description: 'Acessório chave para elevar qualquer visual básico. Brilho sofisticado e fecho resistente.',
         inStock: true
