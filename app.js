@@ -1,5 +1,5 @@
 /**
- * ALTO CONCEITO - LOJA VIRTUAL & PAINEL DO LOJISTA
+ * ALTO CONCEITO - LOJA VIRTUAL DO CLIENTE (STOREFRONT)
  * Inspirado na marca @alto_conceit0
  */
 
@@ -7,9 +7,8 @@
 const STORAGE_PRODUCTS = 'alto_conceito_produtos';
 const STORAGE_CONFIG = 'alto_conceito_config';
 const STORAGE_CART = 'alto_conceito_carrinho';
-const STORAGE_ADMIN_PIN = 'alto_conceito_pin';
 
-// Catálogo Inicial Padrão (Estilo Alto Conceito Streetwear & Trajes)
+// Catálogo Inicial Padrão
 const DEFAULT_PRODUCTS = [
     {
         id: 'prod_1',
@@ -109,7 +108,6 @@ const DEFAULT_PRODUCTS = [
     }
 ];
 
-// Configuração Padrão da Loja
 const DEFAULT_CONFIG = {
     storeName: 'ALTO CONCEITO',
     storeSubtitle: 'ROUPAS MASCULINAS',
@@ -152,7 +150,7 @@ function loadState() {
 
     try {
         const savedConfig = localStorage.getItem(STORAGE_CONFIG);
-        config = savedConfig ? { ...DEFAULT_CONFIG, ...JSON.parse(savedConfig) } : { ...DEFAULT_CONFIG };
+        config = savedCfg = savedConfig ? { ...DEFAULT_CONFIG, ...JSON.parse(savedConfig) } : { ...DEFAULT_CONFIG };
     } catch (e) {
         config = { ...DEFAULT_CONFIG };
     }
@@ -165,14 +163,6 @@ function loadState() {
     }
 }
 
-function saveProducts() {
-    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
-}
-
-function saveConfig() {
-    localStorage.setItem(STORAGE_CONFIG, JSON.stringify(config));
-}
-
 function saveCart() {
     localStorage.setItem(STORAGE_CART, JSON.stringify(cart));
 }
@@ -181,15 +171,12 @@ function saveCart() {
 // RENDERIZAÇÃO DA LOJA
 // ==========================================
 function renderConfig() {
-    // Top Bar Announcement
     const annEl = document.getElementById('tickerText');
     if (annEl) annEl.innerText = config.announcement;
 
-    // Logos e Títulos
     document.querySelectorAll('.store-name-text').forEach(el => el.innerText = config.storeName);
     document.querySelectorAll('.store-slogan-text').forEach(el => el.innerText = config.slogan);
 
-    // Hero Section
     const heroTitle = document.getElementById('heroTitle');
     if (heroTitle) heroTitle.innerText = config.heroTitle;
 
@@ -204,7 +191,6 @@ function renderConfig() {
         heroBg.style.backgroundImage = `linear-gradient(to bottom, rgba(9,9,11,0.55), rgba(9,9,11,0.95)), url('${config.heroImage}')`;
     }
 
-    // Links sociais
     const instaLink = document.getElementById('linkInstagram');
     if (instaLink) instaLink.href = `https://instagram.com/${config.instagram.replace('@', '')}`;
 
@@ -225,7 +211,6 @@ function renderProducts() {
         return matchCategory && matchSearch;
     });
 
-    // Ordenação
     if (currentSort === 'menor') {
         filtered.sort((a, b) => (a.promoPrice || a.price) - (b.promoPrice || b.price));
     } else if (currentSort === 'maior') {
@@ -277,7 +262,7 @@ function renderProducts() {
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                             <span class="text-xs text-white font-medium flex items-center gap-1.5">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                Espiar detalhes
+                                Ver detalhes
                             </span>
                         </div>
                     </div>
@@ -378,15 +363,6 @@ function removeFromCart(index) {
     showToast(`Removido: ${name}`);
 }
 
-function clearCart() {
-    if (cart.length === 0) return;
-    if (confirm('Deseja limpar todos os itens da sacola?')) {
-        cart = [];
-        saveCart();
-        updateCartUI();
-    }
-}
-
 function updateCartUI() {
     const countEl = document.getElementById('cartCountBadge');
     const totalCount = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -456,7 +432,6 @@ function closeCart() {
     }
 }
 
-// Finalização de Pedido via WhatsApp
 function checkoutWhatsApp() {
     if (cart.length === 0) {
         showToast('Adicione produtos à sacola antes de finalizar!');
@@ -517,7 +492,6 @@ function openProductDetail(prodId) {
         oldPriceEl.classList.add('hidden');
     }
 
-    // Tamanhos
     const sizesContainer = document.getElementById('detailSizes');
     const selectedSize = selectedSizes[prod.id] || (prod.sizes && prod.sizes[0]) || 'Único';
     sizesContainer.innerHTML = prod.sizes && prod.sizes.length > 0 ? prod.sizes.map(s => `
@@ -528,7 +502,6 @@ function openProductDetail(prodId) {
         </button>
     `).join('') : '<span class="text-xs text-zinc-400">Tamanho Único</span>';
 
-    // Botão Adicionar
     const addBtn = document.getElementById('detailAddBtn');
     addBtn.onclick = () => {
         addToCart(prod.id);
@@ -544,348 +517,9 @@ function closeProductDetail() {
 }
 
 // ==========================================
-// PAINEL DE CONTROLE DO LOJISTA (ADMIN / CMS)
-// ==========================================
-function openAdminAuth() {
-    const modal = document.getElementById('adminAuthModal');
-    const input = document.getElementById('adminPinInput');
-    if (modal) {
-        modal.classList.remove('hidden');
-        if (input) {
-            input.value = '';
-            setTimeout(() => input.focus(), 100);
-        }
-    }
-}
-
-function closeAdminAuth() {
-    const modal = document.getElementById('adminAuthModal');
-    if (modal) modal.classList.add('hidden');
-}
-
-function checkAdminAuth() {
-    const input = document.getElementById('adminPinInput');
-    const entered = (input?.value || '').trim();
-    const realPin = localStorage.getItem(STORAGE_ADMIN_PIN) || '1234';
-
-    if (entered === realPin) {
-        closeAdminAuth();
-        openAdminPanel();
-    } else {
-        showToast('❌ Senha incorreta! Padrão de fábrica: 1234');
-        if (input) {
-            input.value = '';
-            input.focus();
-        }
-    }
-}
-
-function openAdminPanel() {
-    const modal = document.getElementById('adminPanelModal');
-    if (!modal) return;
-    modal.classList.remove('hidden');
-    switchAdminTab('produtos');
-    renderAdminProductsTable();
-    populateConfigForm();
-}
-
-function closeAdminPanel() {
-    const modal = document.getElementById('adminPanelModal');
-    if (modal) modal.classList.add('hidden');
-}
-
-function switchAdminTab(tabName) {
-    document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
-    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-        btn.classList.remove('bg-white', 'text-black');
-        btn.classList.add('text-zinc-400');
-    });
-
-    const activeContent = document.getElementById(`tab_${tabName}`);
-    const activeBtn = document.getElementById(`tabBtn_${tabName}`);
-
-    if (activeContent) activeContent.classList.remove('hidden');
-    if (activeBtn) {
-        activeBtn.classList.remove('text-zinc-400');
-        activeBtn.classList.add('bg-white', 'text-black');
-    }
-}
-
-// Gestão de Produtos na Tabela do Admin
-function renderAdminProductsTable() {
-    const tbody = document.getElementById('adminProductsTbody');
-    if (!tbody) return;
-
-    tbody.innerHTML = products.map(prod => `
-        <tr class="border-b border-zinc-800 hover:bg-zinc-900/50 transition-colors">
-            <td class="py-3 px-3">
-                <img src="${prod.image}" class="w-12 h-12 object-cover rounded-lg bg-zinc-800" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=100&q=80'">
-            </td>
-            <td class="py-3 px-3">
-                <div class="font-bold text-white text-xs sm:text-sm">${prod.name}</div>
-                <div class="text-[11px] text-zinc-400 uppercase tracking-wider">${prod.category}</div>
-            </td>
-            <td class="py-3 px-3">
-                <div class="text-xs font-bold text-white">R$ ${(prod.promoPrice || prod.price).toFixed(2).replace('.', ',')}</div>
-                ${prod.promoPrice ? `<div class="text-[10px] text-zinc-500 line-through">R$ ${prod.price.toFixed(2).replace('.', ',')}</div>` : ''}
-            </td>
-            <td class="py-3 px-3">
-                <button type="button" onclick="toggleProductStock('${prod.id}')" class="text-xs font-semibold px-2.5 py-1 rounded-full border ${prod.inStock ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400' : 'bg-red-950/60 border-red-500/40 text-red-400'}">
-                    ${prod.inStock ? '✓ Em Estoque' : '✕ Esgotado'}
-                </button>
-            </td>
-            <td class="py-3 px-3 text-right space-x-2">
-                <button type="button" onclick="editProductModal('${prod.id}')" class="p-1.5 text-zinc-400 hover:text-white bg-zinc-800 rounded-lg" title="Editar Peça">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                </button>
-                <button type="button" onclick="deleteProduct('${prod.id}')" class="p-1.5 text-zinc-400 hover:text-red-400 bg-zinc-800 rounded-lg" title="Excluir">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function toggleProductStock(prodId) {
-    const prod = products.find(p => p.id === prodId);
-    if (!prod) return;
-    prod.inStock = !prod.inStock;
-    saveProducts();
-    renderAdminProductsTable();
-    renderProducts();
-    showToast(`Status de estoque atualizado!`);
-}
-
-function deleteProduct(prodId) {
-    const prod = products.find(p => p.id === prodId);
-    if (!prod) return;
-    if (confirm(`Tem certeza que deseja excluir "${prod.name}"?`)) {
-        products = products.filter(p => p.id !== prodId);
-        saveProducts();
-        renderAdminProductsTable();
-        renderProducts();
-        showToast('Peça excluída com sucesso!');
-    }
-}
-
-// Modal de Novo / Editar Produto
-function openNewProductModal() {
-    document.getElementById('prodModalTitle').innerText = 'Adicionar Nova Roupa';
-    document.getElementById('prodEditId').value = '';
-    document.getElementById('formProduct').reset();
-    document.getElementById('prodImagePreview').src = '';
-    document.getElementById('prodImagePreviewContainer').classList.add('hidden');
-    document.getElementById('productFormModal').classList.remove('hidden');
-}
-
-function editProductModal(prodId) {
-    const prod = products.find(p => p.id === prodId);
-    if (!prod) return;
-
-    document.getElementById('prodModalTitle').innerText = 'Editar Roupa';
-    document.getElementById('prodEditId').value = prod.id;
-    document.getElementById('prodName').value = prod.name;
-    document.getElementById('prodCategory').value = prod.category;
-    document.getElementById('prodPrice').value = prod.price;
-    document.getElementById('prodPromoPrice').value = prod.promoPrice || '';
-    document.getElementById('prodBadge').value = prod.badge || '';
-    document.getElementById('prodDescription').value = prod.description || '';
-    document.getElementById('prodImageUrl').value = prod.image || '';
-
-    // Checkboxes de Tamanho
-    const sizeCheckboxes = document.querySelectorAll('input[name="prodSizes"]');
-    sizeCheckboxes.forEach(cb => {
-        cb.checked = prod.sizes && prod.sizes.includes(cb.value);
-    });
-
-    // Preview de Imagem
-    const previewContainer = document.getElementById('prodImagePreviewContainer');
-    const preview = document.getElementById('prodImagePreview');
-    if (prod.image) {
-        preview.src = prod.image;
-        previewContainer.classList.remove('hidden');
-    }
-
-    document.getElementById('productFormModal').classList.remove('hidden');
-}
-
-function closeProductFormModal() {
-    document.getElementById('productFormModal').classList.add('hidden');
-}
-
-function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (file.size > 2.5 * 1024 * 1024) {
-        alert('A imagem é muito grande. Escolha uma foto de até 2.5 MB.');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const base64 = event.target.result;
-        document.getElementById('prodImageUrl').value = base64;
-        document.getElementById('prodImagePreview').src = base64;
-        document.getElementById('prodImagePreviewContainer').classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
-}
-
-function saveProductFromForm(e) {
-    e.preventDefault();
-
-    const id = document.getElementById('prodEditId').value;
-    const name = document.getElementById('prodName').value.trim();
-    const category = document.getElementById('prodCategory').value;
-    const price = parseFloat(document.getElementById('prodPrice').value) || 0;
-    const promoVal = document.getElementById('prodPromoPrice').value;
-    const promoPrice = promoVal ? parseFloat(promoVal) : null;
-    const badge = document.getElementById('prodBadge').value || null;
-    const description = document.getElementById('prodDescription').value.trim();
-    const image = document.getElementById('prodImageUrl').value.trim() || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80';
-
-    const selectedSizesList = Array.from(document.querySelectorAll('input[name="prodSizes"]:checked')).map(cb => cb.value);
-
-    if (!name || price <= 0) {
-        alert('Por favor, informe o nome da peça e um preço válido!');
-        return;
-    }
-
-    if (id) {
-        // Editando existente
-        const idx = products.findIndex(p => p.id === id);
-        if (idx > -1) {
-            products[idx] = {
-                ...products[idx],
-                name,
-                category,
-                price,
-                promoPrice,
-                badge,
-                description,
-                image,
-                sizes: selectedSizesList.length > 0 ? selectedSizesList : ['Único']
-            };
-        }
-    } else {
-        // Criando novo
-        const newProduct = {
-            id: 'prod_' + Date.now(),
-            name,
-            category,
-            price,
-            promoPrice,
-            badge,
-            description,
-            image,
-            sizes: selectedSizesList.length > 0 ? selectedSizesList : ['Único'],
-            inStock: true
-        };
-        products.unshift(newProduct);
-    }
-
-    saveProducts();
-    renderAdminProductsTable();
-    renderProducts();
-    closeProductFormModal();
-    showToast('✓ Peça salva com sucesso no catálogo!');
-}
-
-// Configurações da Loja no Admin
-function populateConfigForm() {
-    document.getElementById('cfgStoreName').value = config.storeName || '';
-    document.getElementById('cfgStoreSlogan').value = config.slogan || '';
-    document.getElementById('cfgAnnouncement').value = config.announcement || '';
-    document.getElementById('cfgWhatsapp').value = config.whatsapp || '';
-    document.getElementById('cfgInstagram').value = config.instagram || '';
-    document.getElementById('cfgHeroTitle').value = config.heroTitle || '';
-    document.getElementById('cfgHeroSubtitle').value = config.heroSubtitle || '';
-    document.getElementById('cfgHeroImage').value = config.heroImage || '';
-}
-
-function saveStoreConfig(e) {
-    e.preventDefault();
-
-    config.storeName = document.getElementById('cfgStoreName').value.trim() || 'ALTO CONCEITO';
-    config.slogan = document.getElementById('cfgStoreSlogan').value.trim() || 'MAIS QUE ROUPAS. ESTILO DE VIDA';
-    config.announcement = document.getElementById('cfgAnnouncement').value.trim() || '';
-    config.whatsapp = document.getElementById('cfgWhatsapp').value.replace(/\D/g, '') || '5518996387204';
-    config.instagram = document.getElementById('cfgInstagram').value.trim() || 'alto_conceit0';
-    config.heroTitle = document.getElementById('cfgHeroTitle').value.trim() || 'NOVA COLEÇÃO';
-    config.heroSubtitle = document.getElementById('cfgHeroSubtitle').value.trim() || '';
-    config.heroImage = document.getElementById('cfgHeroImage').value.trim() || '';
-
-    saveConfig();
-    renderConfig();
-    showToast('✓ Configurações da loja atualizadas!');
-}
-
-// Backup e Restauração de Dados
-function exportCatalogJson() {
-    const backupData = {
-        config: config,
-        products: products,
-        exportedAt: new Date().toISOString()
-    };
-
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `alto_conceito_backup_${new Date().toISOString().slice(0,10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    showToast('✓ Arquivo de backup baixado!');
-}
-
-function importCatalogJson(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        try {
-            const data = JSON.parse(event.target.result);
-            if (data.products && Array.isArray(data.products)) {
-                products = data.products;
-                saveProducts();
-            }
-            if (data.config) {
-                config = { ...config, ...data.config };
-                saveConfig();
-            }
-            renderConfig();
-            renderProducts();
-            renderAdminProductsTable();
-            populateConfigForm();
-            showToast('✓ Catálogo importado com sucesso!');
-        } catch (err) {
-            alert('Erro ao carregar o arquivo JSON. Verifique se o formato é válido.');
-        }
-    };
-    reader.readAsText(file);
-}
-
-function resetDefaultCatalog() {
-    if (confirm('Deseja restaurar todas as roupas e configurações para o modelo padrão da Alto Conceito?')) {
-        products = [...DEFAULT_PRODUCTS];
-        config = { ...DEFAULT_CONFIG };
-        saveProducts();
-        saveConfig();
-        renderConfig();
-        renderProducts();
-        renderAdminProductsTable();
-        populateConfigForm();
-        showToast('✓ Catálogo padrão restaurado!');
-    }
-}
-
-// ==========================================
 // EVENT LISTENERS E UTILITÁRIOS
 // ==========================================
 function setupEventListeners() {
-    // Categorias
     document.querySelectorAll('.cat-pill').forEach(pill => {
         pill.addEventListener('click', () => {
             document.querySelectorAll('.cat-pill').forEach(p => {
@@ -900,7 +534,6 @@ function setupEventListeners() {
         });
     });
 
-    // Busca
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -909,33 +542,11 @@ function setupEventListeners() {
         });
     }
 
-    // Ordenação
     const sortSelect = document.getElementById('sortSelect');
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
             currentSort = e.target.value;
             renderProducts();
-        });
-    }
-
-    // Imagem Upload no Admin
-    const fileInput = document.getElementById('prodImageFile');
-    if (fileInput) {
-        fileInput.addEventListener('change', handleImageUpload);
-    }
-
-    const urlInput = document.getElementById('prodImageUrl');
-    if (urlInput) {
-        urlInput.addEventListener('input', (e) => {
-            const val = e.target.value.trim();
-            const previewContainer = document.getElementById('prodImagePreviewContainer');
-            const preview = document.getElementById('prodImagePreview');
-            if (val) {
-                preview.src = val;
-                previewContainer.classList.remove('hidden');
-            } else {
-                previewContainer.classList.add('hidden');
-            }
         });
     }
 }
